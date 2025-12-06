@@ -3,31 +3,52 @@
   stdenv,
   fetchFromGitHub,
   cmake,
-  libsForQt5,
+  qt6,
+
+  # Optional
+  zlib, # Lossless data-compression
+  barcode, # GNU barcode
+  qrencode,
+  libzint, # Barcode generating tool
 }:
 
 stdenv.mkDerivation {
   pname = "glabels-qt";
-  version = "unstable-2021-02-06";
+  version = "3.99-unstable-2025-12-04";
 
   src = fetchFromGitHub {
-    owner = "jimevins";
+    owner = "j-evins";
     repo = "glabels-qt";
-    rev = "glabels-3.99-master564";
-    hash = "sha256-SdNOkjspqf6NuuIBZDsJneY6PNrIiP4HU46wDpBLt9Y=";
+    rev = "3.99-master602";
+    hash = "sha256-7MQufoU1GBvmZd8FRn331/PwmwQMuZeuFKQqViRI754=";
   };
+
+  buildInputs = [
+    qt6.qtbase
+    qt6.qtsvg
+
+    zlib
+    barcode
+    qrencode
+    libzint
+  ];
 
   nativeBuildInputs = [
     cmake
-    libsForQt5.wrapQtAppsHook
-    libsForQt5.qttools
+    qt6.qttools
+    qt6.wrapQtAppsHook
   ];
 
   meta = with lib; {
-    description = "GLabels Label Designer (Qt/C++)";
-    homepage = "https://github.com/jimevins/glabels-qt";
-    license = licenses.gpl3Only;
+    description = "Label Designer (Qt/C++";
+    homepage = "https://github.com/j-evins/glabels-qt";
+    license = with licenses; [
+      gpl3Plus
+      lgpl3Plus
+      mit
+    ];
+    mainProgram = "glabels-qt";
     maintainers = [ maintainers.matthewcroughan ];
-    platforms = lib.platforms.linux;
+    platforms = platforms.linux;
   };
 }
